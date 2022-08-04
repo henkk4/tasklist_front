@@ -1,11 +1,10 @@
 import { useState } from "react";
-import ReactDOM from 'react-dom/client';
+
 
 import './App.css';
 
 function App() {
   const [taskText, setTaskText] = useState("");
-  const [modify, setModify] = useState(false);
   const [modText, setModText] = useState("");
   const [tasks, setTasks] = useState([]);
 
