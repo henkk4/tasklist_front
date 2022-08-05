@@ -70,7 +70,7 @@ function App() {
   }
 
   const getTasks = () => {
-    fetch('https://tasklist-backend.azurewebsites.net/api/httptrigger2')
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger1')
         .then(response => response.json())
         .then(data => setTasks(data));
   }
