@@ -69,10 +69,18 @@ function App() {
     console.log(newArray)
   }
 
+  const getTasks = () => {
+    fetch('https://tasklist-backend.azurewebsites.net/api/httptrigger2')
+        .then(response => response.json())
+        .then(data => setTasks(data));
+  }
+
 
   return (
     <div className="App">
       <h1>TO-DO_LIST</h1>
+
+      <button onClick={getTasks}>Get tasks from server</button>
 
       <form onSubmit={handleSubmit}>
       <label>Enter new task:
