@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 import './App.css';
@@ -8,6 +8,9 @@ function App() {
   const [modText, setModText] = useState("");
   const [tasks, setTasks] = useState([]);
 
+  useEffect(() => {
+    getTasks()
+  }, []);
   
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -18,7 +21,15 @@ function App() {
       modify: false
     }
 
-    setTasks(tasks.concat(task));
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(task)
+    };
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger2', requestOptions)
+        .then(response => response.json())
+        .then(data => setTasks(tasks.concat(data)));
+
     setTaskText("")
   }
 
@@ -26,7 +37,14 @@ function App() {
     const newArray = tasks.filter((task) => task.text !== item.text)
     setTasks(newArray)
 
-    console.log(item)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: item.id })
+    };
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger4', requestOptions)
+
+    
     
   }
   const startModify = (item) => {
@@ -53,6 +71,17 @@ function App() {
         return task
       }
     })
+
+    item.text = modText
+    item.modify = false
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    };
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger5', requestOptions)
+
     setTasks(newArray)
   }
   const handleCheck = (item) => {
@@ -65,14 +94,26 @@ function App() {
         return task
       }
     })
+
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    };
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger5', requestOptions)
+
     setTasks(newArray)
     console.log(newArray)
   }
 
   const getTasks = () => {
-    fetch('https://tasklist-backend.azurewebsites.net/api/httptrigger2')
+    fetch('https://tasklistfunction111.azurewebsites.net/api/httptrigger3')
         .then(response => response.json())
-        .then(data => setTasks(data));
+        .then(data => {
+          console.log(data)
+          setTasks(data)
+        });
   }
 
 
@@ -80,7 +121,6 @@ function App() {
     <div className="App">
       <h1>TO-DO_LIST</h1>
 
-      <button onClick={getTasks}>Get tasks from server</button>
 
       <form onSubmit={handleSubmit}>
       <label>Enter new task:
@@ -118,6 +158,7 @@ function App() {
               <input 
                 type="checkbox"
                 value={item.checked}
+                checked={item.checked}
                 onChange={() => handleCheck(item)} />
                 Done
               </label>
